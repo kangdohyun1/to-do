@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인</title>
+    <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center; /* 가로 중앙 */
+      align-items: center;     /* 세로 중앙 */
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+    }
+
+    form {
+      background-color: #fff;
+      padding: 2rem 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      min-width: 300px;
+    }
+
+    h1 {
+      margin: 0 0 1rem;
+      font-size: 1.5rem;
+      text-align: center;
+    }
+
+    input {
+      padding: 0.5rem;
+      font-size: 1rem;
+      width: 100%;
+    }
+
+    button {
+      padding: 0.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+    <form>
+    <h1>로그인</h1>
+    <div> email : <input type="email" id="loginEmail" /> </div>
+    <div> password : <input type="password" id="loginPassword" /> </div>
+    <button type="submit" id="loginButton">로그인 하기</button>
+    <button type="button" id="googleLoginButton">Google 계정으로 로그인</button>
+    <button type="button" id="goToSignUpButton" >회원가입 하러 하기</button>
+  </form>
+
+ <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup} from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD50sFq3ZzDVt0-U10ltZ1lmVSxsr_bMNg",
+      authDomain: "to-do-list-46898.firebaseapp.com",
+      projectId: "to-do-list-46898",
+      storageBucket: "to-do-list-46898.firebasestorage.app",
+      messagingSenderId: "753523597213",
+      appId: "1:753523597213:web:063c3b17a3e18b2b5a9974",
+      measurementId: "G-VYTVZC4HFM"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+     
+    const form = document.querySelector('form');
+    //로그인 처리 코드
+    document.getElementById('loginButton').addEventListener('click', (e) => {
+      e.preventDefault();
+      const loginEmail = document.getElementById('loginEmail').value;
+      const loginPassword = document.getElementById('loginPassword').value;
+
+      if (!loginEmail || !loginPassword) {
+        alert("이메일과 비밀번호를 모두 입력해주세요.");
+        return;
+      }
+
+      signInWithEmailAndPassword(auth, loginEmail, loginPassword)
+        .then((userCredential) => {
+          alert("로그인 성공!");
+          window.location.href = "main.html"; 
+          // 이동 또는 처리
+        })
+        .catch((error) => {
+          alert("로그인 실패: " + error.message);
+        });
+    });
+    
+    document.getElementById('googleLoginButton').addEventListener('click', () => {
+      signInWithPopup(auth, provider)
+        .then((result) => {
+          const user = result.user;
+          alert(`Google 로그인 성공: ${user.email}`);
+          window.location.href = "main.html";
+        })
+        .catch((error) => {
+          alert("Google 로그인 실패: " + error.message);
+        });
+    });
+
+
+
+    document.getElementById('goToSignUpButton').addEventListener('click', () => {
+      window.location.href = "signup.html";
+    });
+  </script>
+</body>
+</html>
